@@ -1,0 +1,16 @@
+{
+  "name": "kafka-test",
+  "version": "1.0.0",
+  "description": "Test app for kafka",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "nodemon index.js"
+  },
+  "author": "Jasurbek Abdurakhmonov",
+  "license": "ISC",
+  "dependencies": {
+    "kafkajs": "^2.2.2",
+    "nodemon": "^2.0.20"
+  }
+}
