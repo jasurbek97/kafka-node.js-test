@@ -38,24 +38,37 @@ run().catch(console.error)
 ## Docker compose file
 
 ```dockerfile
-version: "3"
+version: "2"
 services:
   zookeeper:
-    image: 'bitnami/zookeeper:latest'
+    image: 'confluentinc/cp-zookeeper:latest'
+    container_name: zookeeper
+    networks:
+      - kafka_network
     ports:
-      - '2181:2181'
+      - '22181:2181'
     environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
+      ZOOKEEPER_CLIENT_PORT: 22181
+      ZOOKEEPER_TICK_TIME: 2000
   kafka:
-    image: 'bitnami/kafka:latest'
+    image: 'confluentinc/cp-kafka:latest'
+    networks:
+      - kafka_network
     ports:
-      - '9092:9092'
+      - '29092:29092'
+      - '29093:29093'
     environment:
-      - KAFKA_BROKER_ID=1
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-      - ALLOW_PLAINTEXT_LISTENER=yes
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:22181
+      KAFKA_LISTENERS: EXTERNAL_SAME_HOST://:29092,EXTERNAL_DIFFERENT_HOST://:29093,INTERNAL://:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL_SAME_HOST://localhost:29092,EXTERNAL_DIFFERENT_HOST://172.16.15.122:29093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL_SAME_HOST:PLAINTEXT,EXTERNAL_DIFFERENT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     depends_on:
       - zookeeper
+
+networks:
+  kafka_network:
+    name: kafka_docker_example_network
 ```

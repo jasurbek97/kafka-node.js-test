@@ -1,13 +1,16 @@
 const { Kafka } = require('kafkajs')
 
+
 const kafka = new Kafka({
     clientId: 'coin-service',
-    brokers: ['127.0.0.1:9092'],
-    logLevel: 0
+    brokers: ['172.16.15.122:29093'],
+    logLevel: 1
 })
 
+
 const producer = kafka.producer()
-const consumer = kafka.consumer({ groupId: 'coin-consumer' })
+const consumer = kafka.consumer({ groupId: 'coin-service-server' })
+
 
 const run = async () => {
     await producer.connect()
@@ -28,5 +31,5 @@ const run = async () => {
         },
     })
 }
-
+//
 run().catch(console.error)
