@@ -35,8 +35,8 @@ const run = async () => {
 
 run().catch(console.error)
 ```
-## Docker compose file
 
+## Docker compose file
 ```dockerfile
 version: "2"
 services:
